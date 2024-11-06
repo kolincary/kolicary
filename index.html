@@ -1,61 +1,155 @@
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gudang LT.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            background-color: #f9fafb;
+            font-family: 'Arial', sans-serif;
         }
-        .square {
-            will-change: transform;
-            transform: translate3d(0%, 0px, 0px) scale3d(1, 1, 1);
-            transform-style: preserve-3d;
-            transition: transform 0.3s ease;
-            width: 2200px;
-            left: 33%;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .textarea, .button, .table, .total {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .textarea {
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+        }
+        .button {
+            padding: 10px 20px;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #f3f4f6;
+        }
+        .table {
+            width: 200px;
+            border-collapse: collapse;
+            margin-right: 20px;
+        }
+        .table th, .table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+        }
+        .total {
+            padding: 10px;
+            margin-left: 10px;
         }
     </style>
-</head>
-<body class="bg-white text-black">
-    <header class="flex justify-between items-center p-6">
-        <div class="text-xl font-bold">GUDANG LT.5</div>
-        <nav class="space-x-8">
-            <a href="#" class="text-blue-600">Home</a>
-            <a href="#" class="text-black">Stok Barang</a>
-            <a href="#" class="text-black">Stok Masuk</a>
-            <a href="#" class="text-black">Stok Keluar</a>
-            <a href="#" class="text-black">Riwayat</a>
-            <a href="#" class="text-black">Semua Rak</a>
-            <a href="#" class="text-black">Input SKU</a>
-            <a href="#" class="text-black">Data S.O</a>
-            <a href="#" class="text-black">Contact</a>
-        </nav>
-    </header>
-    <hr class="border-t-2 border-black">
-    <div class="relative">
-        <img src="https://cdn.prod.website-files.com/5b13df51d0d5fe8211f203da/5b13f381541a8480ba1420db_square.svg" alt="Yellow and red background" class="square absolute top-20">
-    </div>
-    <main class="flex flex-col items-start justify-center h-screen relative pl-20">
-        <div class="text-9xl font-bold leading-none z-10">
-            <p>Hey.</p>
-            <p>We’re <span class="text-black">ok.</span></p>
-        </div>
-        <div class="mt-16 z-10">
-            <img src="https://cdn.prod.website-files.com/5b13df51d0d5fe8211f203da/5b13f32811a9ded47d358b1d_arrow-blue-long.svg" alt="Blue arrow pointing down" class="w-16 h-16">
-        </div>
-    </main>
     <script>
-        window.addEventListener('scroll', function() {
-            const square = document.querySelector('.square');
-            const scrollY = window.scrollY;
-            const scale = Math.max(1 - scrollY / 1000, 0.5);
-            const translateY = Math.min(scrollY / 2, 200);
-            square.style.transform = `translate3d(0%, ${translateY}px, 0px) scale3d(${scale}, ${scale}, 1)`;
-        });
+        function addData(tableId) {
+            const data = document.getElementById('dataInput').value.split('\n');
+            const table = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+            data.forEach(item => {
+                const newRow = table.insertRow();
+                const newCell = newRow.insertCell(0);
+                newCell.textContent = item;
+                newCell.classList.add('border', 'border-gray-300', 'p-2', 'whitespace-nowrap');
+            });
+            updateTotal(tableId);
+        }
+
+        function updateTotal(tableId) {
+            const table = document.getElementById(tableId);
+            const total = table.getElementsByTagName('tbody')[0].rows.length;
+            document.getElementById(tableId + 'Total').textContent = 'Total: ' + total;
+        }
+
+        function removeDuplicates() {
+            const hasilPLTable = document.getElementById('table1').getElementsByTagName('tbody')[0];
+            const scanLogistikTable = document.getElementById('table2').getElementsByTagName('tbody')[0];
+            const scanBoronganTable = document.getElementById('table3').getElementsByTagName('tbody')[0];
+
+            const hasilPLData = Array.from(hasilPLTable.rows).map(row => row.cells[0].textContent);
+
+            removeDuplicatesFromTable(scanLogistikTable, hasilPLData);
+            removeDuplicatesFromTable(scanBoronganTable, hasilPLData);
+
+            updateTotal('table2');
+            updateTotal('table3');
+        }
+
+        function removeDuplicatesFromTable(table, referenceData) {
+            for (let i = table.rows.length - 1; i >= 0; i--) {
+                if (referenceData.includes(table.rows[i].cells[0].textContent)) {
+                    table.deleteRow(i);
+                }
+            }
+        }
     </script>
+</head>
+<body class="flex flex-col items-center p-8">
+    <div class="container">
+        <div class="header">Data Management</div>
+        <div class="flex items-start mb-12">
+            <textarea id="dataInput" class="textarea w-80 h-24 p-2 border border-gray-300" placeholder="Tempel data di sini..."></textarea>
+            <div class="flex flex-col ml-4">
+                <button class="button mb-2" onclick="document.getElementById('dataInput').value=''">Hapus</button>
+                <button class="button mb-2" onclick="addData('table1')">Add Data 1</button>
+                <button class="button mb-2" onclick="addData('table2')">Add Data 2</button>
+                <button class="button" onclick="addData('table3')">Add Data 3</button>
+            </div>
+        </div>
+        <div class="flex justify-between w-full max-w-5xl">
+            <div class="flex flex-col items-start mr-16">
+                <div class="flex items-center mb-2">
+                    <label>Hasil PL</label>
+                    <div id="table1Total" class="total ml-2">Total: 0</div>
+                </div>
+                <div class="flex items-center">
+                    <table id="table1" class="table border border-gray-300 text-left mr-2">
+                        <thead>
+                            <tr><th class="border border-gray-300 p-2">INV</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="flex flex-col items-start mr-16">
+                <div class="flex items-center mb-2">
+                    <label>Scan Logistik</label>
+                    <div id="table2Total" class="total ml-2">Total: 0</div>
+                </div>
+                <div class="flex items-center">
+                    <table id="table2" class="table border border-gray-300 text-left mr-2">
+                        <thead>
+                            <tr><th class="border border-gray-300 p-2">INV</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="flex flex-col items-start mr-16">
+                <div class="flex items-center mb-2">
+                    <label>Scan Borongan</label>
+                    <div id="table3Total" class="total ml-2">Total: 0</div>
+                </div>
+                <div class="flex items-center">
+                    <table id="table3" class="table border border-gray-300 text-left mr-2">
+                        <thead>
+                            <tr><th class="border border-gray-300 p-2">INV</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="flex flex-col items-start ml-8">
+                <button class="button px-4 py-2 border border-gray-300" onclick="removeDuplicates()">Hapus duplikat</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
