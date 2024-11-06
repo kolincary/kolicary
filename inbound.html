@@ -50,6 +50,7 @@
                     <div>
                         <button type="button" id="addRow" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Tambah Baris</button>
                         <button type="button" id="add10Rows" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Tambah 10 Baris</button>
+                        <button type="button" id="dataMaster" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Data Master</button>
                         <button type="button" id="copyData" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Copy</button>
                     </div>
                     <span id="rowCount" class="text-gray-700">Row: 10</span>
@@ -334,6 +335,11 @@
             }).catch(err => {
                 console.error('Error copying data: ', err);
             });
+        });
+
+        // Redirect to Data Master page
+        document.getElementById('dataMaster').addEventListener('click', function() {
+            window.location.href = 'datamaster.html';
         });
     </script>
 </body>
