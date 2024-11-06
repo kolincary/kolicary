@@ -11,6 +11,33 @@
         .no-wrap {
             white-space: nowrap;
         }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 100%;
+            max-height: 150px;
+            overflow-y: auto;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content div {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content div:hover, .dropdown-content .highlight {
+            background-color: #f1f1f1;
+        }
+        .dropdown.show .dropdown-content {
+            display: block;
+        }
     </style>
 </head>
 <body class="font-roboto bg-gray-100 h-screen flex">
@@ -42,9 +69,14 @@
                             for (let i = 0; i < 10; i++) {
                                 document.write(`
                                     <tr>
-                                        <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap"></td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <div class="dropdown">
+                                                <input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap" oninput="showDropdown(this)" onkeydown="navigateDropdown(event, this)">
+                                                <div class="dropdown-content"></div>
+                                            </div>
+                                        </td>
                                         <td class="border border-gray-300 px-4 py-2"><input type="text" value="0" class="w-full p-2 border border-gray-300 rounded biaya" readonly></td>
-                                        <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas"></td>
+                                        <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas" onkeydown="navigateKuantitas(event, this)"></td>
                                         <td class="border border-gray-300 px-4 py-2 text-center"><button type="button" class="bg-red-500 text-white px-2 py-1 rounded deleteRow">Hapus</button></td>
                                     </tr>
                                 `);
@@ -157,9 +189,14 @@
             for (let i = 0; i < numRows; i++) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap"></td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <div class="dropdown">
+                            <input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap" oninput="showDropdown(this)" onkeydown="navigateDropdown(event, this)">
+                            <div class="dropdown-content"></div>
+                        </div>
+                    </td>
                     <td class="border border-gray-300 px-4 py-2"><input type="text" value="0" class="w-full p-2 border border-gray-300 rounded biaya" readonly></td>
-                    <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas"></td>
+                    <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas" onkeydown="navigateKuantitas(event, this)"></td>
                     <td class="border border-gray-300 px-4 py-2 text-center"><button type="button" class="bg-red-500 text-white px-2 py-1 rounded deleteRow">Hapus</button></td>
                 `;
                 tableBody.appendChild(row);
@@ -186,6 +223,97 @@
 
         // Initial row count update
         updateRowCount();
+
+        // Google Sheets API
+        const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A';
+        const spreadsheetId = '1Lr7Do1DYOhNqAjoWcUEd1xqH4pHCQxEHxDD1rP4Q-Dc';
+        const stokRange = 'Sheet1!A2:A';
+
+        async function fetchData() {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            return data.values.flat();
+        }
+
+        async function showDropdown(inputElement) {
+            const dropdownContent = inputElement.nextElementSibling;
+            const query = inputElement.value.toLowerCase();
+            const data = await fetchData();
+            const filteredData = data.filter(item => item.toLowerCase().includes(query));
+            dropdownContent.innerHTML = '';
+            filteredData.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.textContent = item;
+                if (index === 0) {
+                    div.classList.add('highlight');
+                }
+                div.addEventListener('click', () => {
+                    inputElement.value = item;
+                    dropdownContent.innerHTML = '';
+                });
+                dropdownContent.appendChild(div);
+            });
+            dropdownContent.parentElement.classList.add('show');
+        }
+
+        function navigateDropdown(event, inputElement) {
+            const dropdownContent = inputElement.nextElementSibling;
+            const items = dropdownContent.querySelectorAll('div');
+            let index = Array.from(items).findIndex(item => item.classList.contains('highlight'));
+
+            if (event.key === 'ArrowDown') {
+                index = (index + 1) % items.length;
+                items.forEach(item => item.classList.remove('highlight'));
+                items[index].classList.add('highlight');
+                event.preventDefault();
+            } else if (event.key === 'ArrowUp') {
+                index = (index - 1 + items.length) % items.length;
+                items.forEach(item => item.classList.remove('highlight'));
+                items[index].classList.add('highlight');
+                event.preventDefault();
+            } else if (event.key === 'Enter') {
+                if (index >= 0) {
+                    inputElement.value = items[index].textContent;
+                    dropdownContent.innerHTML = '';
+                    const nextRow = inputElement.closest('tr').nextElementSibling;
+                    if (nextRow) {
+                        const nextInput = nextRow.querySelector('.msku');
+                        if (nextInput) {
+                            nextInput.focus();
+                        }
+                    }
+                }
+                event.preventDefault();
+            } else if (event.key === 'Tab') {
+                if (index >= 0) {
+                    inputElement.value = items[index].textContent;
+                    dropdownContent.innerHTML = '';
+                }
+            }
+        }
+
+        function navigateKuantitas(event, inputElement) {
+            if (event.key === 'Enter') {
+                const nextRow = inputElement.closest('tr').nextElementSibling;
+                if (nextRow) {
+                    const nextInput = nextRow.querySelector('.kuantitas');
+                    if (nextInput) {
+                        nextInput.focus();
+                    }
+                }
+                event.preventDefault();
+            }
+        }
+
+        document.addEventListener('click', function(event) {
+            if (!event.target.matches('.msku')) {
+                const dropdowns = document.querySelectorAll('.dropdown');
+                dropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                });
+            }
+        });
     </script>
 </body>
 </html>
