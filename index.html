@@ -30,9 +30,16 @@
             border: 1px solid #e5e7eb;
             cursor: pointer;
             transition: background-color 0.3s;
+            color: #ffffff;
         }
         .button:hover {
             background-color: #f3f4f6;
+        }
+        .button-hapus {
+            background-color: #e53e3e;
+        }
+        .button-add {
+            background-color: #3182ce;
         }
         .table {
             width: 200px;
@@ -97,10 +104,10 @@
         <div class="flex items-start mb-12">
             <textarea id="dataInput" class="textarea w-80 h-24 p-2 border border-gray-300" placeholder="Tempel data di sini..."></textarea>
             <div class="flex flex-col ml-4">
-                <button class="button mb-2" onclick="document.getElementById('dataInput').value=''">Hapus</button>
-                <button class="button mb-2" onclick="addData('table1')">Add Data 1</button>
-                <button class="button mb-2" onclick="addData('table2')">Add Data 2</button>
-                <button class="button" onclick="addData('table3')">Add Data 3</button>
+                <button class="button button-hapus mb-2" onclick="document.getElementById('dataInput').value=''">Hapus</button>
+                <button class="button button-add mb-2" onclick="addData('table1')">Add Data 1</button>
+                <button class="button button-add mb-2" onclick="addData('table2')">Add Data 2</button>
+                <button class="button button-add" onclick="addData('table3')">Add Data 3</button>
             </div>
         </div>
         <div class="flex justify-between w-full max-w-5xl">
@@ -147,7 +154,7 @@
                 </div>
             </div>
             <div class="flex flex-col items-start ml-8">
-                <button class="button px-4 py-2 border border-gray-300" onclick="removeDuplicates()">Hapus duplikat</button>
+                <button class="button button-hapus px-4 py-2 border border-gray-300" onclick="removeDuplicates()">Hapus duplikat</button>
             </div>
         </div>
     </div>
