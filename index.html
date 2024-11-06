@@ -37,9 +37,14 @@
         }
         .button-hapus {
             background-color: #e53e3e;
+	    width: 150px
         }
         .button-add {
             background-color: #3182ce;
+        }
+        .button-clear {
+            background-color: #e53e3e;
+	    width: 150px
         }
         .table {
             width: 200px;
@@ -67,11 +72,14 @@
                 newCell.classList.add('border', 'border-gray-300', 'p-2', 'whitespace-nowrap');
             });
             updateTotal(tableId);
+            document.getElementById('dataInput').value = '';
         }
 
         function updateTotal(tableId) {
             const table = document.getElementById(tableId);
-            const total = table.getElementsByTagName('tbody')[0].rows.length;
+            const total = Array.from(table.getElementsByTagName('tbody')[0].rows)
+                .filter(row => row.cells[0].textContent !== 'INV')
+                .length;
             document.getElementById(tableId + 'Total').textContent = 'Total: ' + total;
         }
 
@@ -95,6 +103,16 @@
                     table.deleteRow(i);
                 }
             }
+        }
+
+        function clearTables() {
+            ['table1', 'table2', 'table3'].forEach(tableId => {
+                const table = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+                while (table.rows.length > 0) {
+                    table.deleteRow(0);
+                }
+                updateTotal(tableId);
+            });
         }
     </script>
 </head>
@@ -154,7 +172,8 @@
                 </div>
             </div>
             <div class="flex flex-col items-start ml-8">
-                <button class="button button-hapus px-4 py-2 border border-gray-300" onclick="removeDuplicates()">Hapus duplikat</button>
+                <button id="hapusDuplikat" class="button button-hapus px-4 py-2 border border-gray-300 mb-2" onclick="removeDuplicates()">Hapus duplikat</button>
+                <button id="hapusDataTable" class="button button-clear px-4 py-2 border border-gray-300" onclick="clearTables()">Hapus Table</button>
             </div>
         </div>
     </div>
