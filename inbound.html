@@ -50,7 +50,7 @@
                     <div>
                         <button type="button" id="addRow" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Tambah Baris</button>
                         <button type="button" id="add10Rows" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Tambah 10 Baris</button>
-                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Submit</button>
+                        <button type="button" id="copyData" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Copy</button>
                     </div>
                     <span id="rowCount" class="text-gray-700">Row: 10</span>
                 </div>
@@ -315,6 +315,25 @@
                     dropdown.classList.remove('show');
                 });
             }
+        });
+
+        // Copy data functionality
+        document.getElementById('copyData').addEventListener('click', function() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            let dataToCopy = '';
+            rows.forEach(row => {
+                const msku = row.querySelector('.msku').value.trim();
+                const biaya = row.querySelector('.biaya').value.trim();
+                const kuantitas = row.querySelector('.kuantitas').value.trim();
+                if ((msku || kuantitas) && biaya === '0') {
+                    dataToCopy += `${msku}\t${biaya}\t${kuantitas}\n`;
+                }
+            });
+            navigator.clipboard.writeText(dataToCopy.trim()).then(() => {
+                alert('Data copied to clipboard');
+            }).catch(err => {
+                console.error('Error copying data: ', err);
+            });
         });
     </script>
 </body>
