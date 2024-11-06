@@ -1,0 +1,191 @@
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Viewer and Data Input</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <style>
+        .no-wrap {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body class="font-roboto bg-gray-100 h-screen flex">
+    <div class="container mx-auto p-4 bg-white shadow-lg rounded-lg flex h-full">
+        <!-- Left Side: Data Input -->
+        <div class="w-1/2 p-4 border-r border-gray-200 h-full overflow-auto">
+            <h2 class="text-2xl font-bold mb-4">Input Data</h2>
+            <form id="dataForm">
+                <div class="flex mb-4 items-center justify-between">
+                    <div>
+                        <button type="button" id="addRow" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Tambah Baris</button>
+                        <button type="button" id="add10Rows" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Tambah 10 Baris</button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Submit</button>
+                    </div>
+                    <span id="rowCount" class="text-gray-700">Row: 10</span>
+                </div>
+                <table class="w-full mb-4 border-collapse border border-gray-300">
+                    <thead>
+                        <tr>
+                            <th class="border border-gray-300 px-4 py-2 w-2/3">MSKU</th>
+                            <th class="border border-gray-300 px-4 py-2 w-1/6">Biaya</th>
+                            <th class="border border-gray-300 px-4 py-2 w-1/6">Kuantitas</th>
+                            <th class="border border-gray-300 px-4 py-2 w-1/6">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Default 10 rows -->
+                        <script>
+                            for (let i = 0; i < 10; i++) {
+                                document.write(`
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap"></td>
+                                        <td class="border border-gray-300 px-4 py-2"><input type="text" value="0" class="w-full p-2 border border-gray-300 rounded biaya" readonly></td>
+                                        <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas"></td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center"><button type="button" class="bg-red-500 text-white px-2 py-1 rounded deleteRow">Hapus</button></td>
+                                    </tr>
+                                `);
+                            }
+                        </script>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <!-- Right Side: PDF Viewer -->
+        <div class="w-1/2 p-4 flex flex-col h-full">
+            <h2 class="text-2xl font-bold mb-4">PDF Viewer</h2>
+            <div class="mb-4">
+                <label for="pdfUpload" class="block text-gray-700">Upload PDF</label>
+                <input type="file" id="pdfUpload" class="w-full p-2 border border-gray-300 rounded mt-1" accept="application/pdf">
+            </div>
+            <button id="renderPdfButton" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Render PDF</button>
+            <div class="flex mb-4">
+                <button id="prevPage" class="bg-gray-300 text-black px-4 py-2 rounded mr-2">Previous</button>
+                <button id="nextPage" class="bg-gray-300 text-black px-4 py-2 rounded">Next</button>
+            </div>
+            <div class="border border-gray-300 rounded overflow-auto flex-grow" id="pdfViewerContainer">
+                <canvas id="pdfViewer" class="w-full"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.worker.min.js';
+
+        let pdfDoc = null;
+        let currentPage = 1;
+        let pdfFile = null;
+
+        document.getElementById('pdfUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                pdfFile = file;
+            } else {
+                alert('Silakan unggah file PDF yang valid.');
+            }
+        });
+
+        document.getElementById('renderPdfButton').addEventListener('click', function() {
+            if (pdfFile) {
+                const fileReader = new FileReader();
+                fileReader.onload = function() {
+                    const typedarray = new Uint8Array(this.result);
+
+                    pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+                        pdfDoc = pdf; // Simpan dokumen PDF
+                        currentPage = 1; // Reset halaman saat ini
+                        renderPage(currentPage); // Render halaman pertama
+                    }).catch(function(error) {
+                        console.error('Error rendering PDF:', error);
+                        alert('Error rendering PDF. Please try again.');
+                    });
+                };
+                fileReader.readAsArrayBuffer(pdfFile);
+            } else {
+                alert('Please upload a PDF file first.');
+            }
+        });
+
+        function renderPage(pageNum) {
+            pdfDoc.getPage(pageNum).then(function(page) {
+                const scale = 1.5;
+                const viewport = page.getViewport({ scale: scale });
+
+                const canvas = document.getElementById('pdfViewer');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext).promise.then(function() {
+                    // Adjust the container height to fit the canvas
+                    document.getElementById('pdfViewerContainer').style.height = `${canvas.height}px`;
+                });
+            });
+        }
+
+        document.getElementById('prevPage').addEventListener('click', function() {
+            if (currentPage <= 1) return; // Tidak bisa mundur dari halaman pertama
+            currentPage--;
+            renderPage(currentPage);
+        });
+
+        document.getElementById('nextPage').addEventListener('click', function() {
+            if (currentPage >= pdfDoc.numPages) return; // Tidak bisa maju dari halaman terakhir
+            currentPage++;
+            renderPage(currentPage);
+        });
+
+        // Add row functionality
+        document.getElementById('addRow').addEventListener('click', function() {
+            addRows(1);
+        });
+
+        document.getElementById('add10Rows').addEventListener('click', function() {
+            addRows(10);
+        });
+
+        function addRows(numRows) {
+            const tableBody = document.getElementById('tableBody');
+            for (let i = 0; i < numRows; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap"></td>
+                    <td class="border border-gray-300 px-4 py-2"><input type="text" value="0" class="w-full p-2 border border-gray-300 rounded biaya" readonly></td>
+                    <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas"></td>
+                    <td class="border border-gray-300 px-4 py-2 text-center"><button type="button" class="bg-red-500 text-white px-2 py-1 rounded deleteRow">Hapus</button></td>
+                `;
+                tableBody.appendChild(row);
+            }
+            updateRowCount();
+        }
+
+        function updateRowCount() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            let count = rows.length;
+            document.getElementById('rowCount').textContent = `Row: ${count}`;
+        }
+
+        // Update row count on input change
+        document.getElementById('tableBody').addEventListener('input', updateRowCount);
+
+        // Delete row functionality
+        document.getElementById('tableBody').addEventListener('click', function(event) {
+            if (event.target.classList.contains('deleteRow')) {
+                event.target.closest('tr').remove();
+                updateRowCount();
+            }
+        });
+
+        // Initial row count update
+        updateRowCount();
+    </script>
+</body>
+</html>
