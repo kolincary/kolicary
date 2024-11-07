@@ -39,6 +39,11 @@
         .dropdown.show .dropdown-content {
             display: block;
         }
+#pdfViewerContainer:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    background-color: white; /* Atur latar belakang sesuai kebutuhan */
+}
     </style>
 </head>
 <body class="font-roboto bg-gray-50 h-screen flex">
@@ -55,7 +60,7 @@
                         <button type="button" id="hideButton" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition duration-200">Delete</button>
                         <button type="button" id="copyData" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Copy</button>
                     </div>
-                    <span id="rowCount" class="text-gray-600 ml-2">Row: 10</span>
+                    <span id="rowCount" class="text-gray-600 ml-2">Row: 12</span>
                 </div>
                 <table class="w-full mb-6 border-collapse border border-gray-300">
                     <thead>
@@ -67,9 +72,9 @@
                         </tr>
                     </thead>
                     <tbody id="tableBody">
-                        <!-- Default 10 rows -->
+                        <!-- Default 12 rows -->
                         <script>
-                            for (let i = 0; i < 10; i++) {
+                            for (let i = 0; i < 12; i++) {
                                 document.write(`
                                     <tr>
                                         <td class="border border-gray-300 px-4 py-2">
@@ -92,7 +97,7 @@
         <!-- Right Side: PDF Viewer -->
         <div class="w-1/2 p-6 flex flex-col h-full">
             <h2 class="text-3xl font-bold mb-6 text-gray-800">PDF Viewer</h2>
-            <div class="mb-6">
+            <div class="mb-6" id="pdfControls">
                 <label for="pdfUpload" class="block text-gray-700">Upload PDF</label>
                 <input type="file" id="pdfUpload" class="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500" accept="application/pdf">
             </div>
@@ -102,7 +107,10 @@
                 <button id="nextPage" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded transition duration-200">Next</button>
                 <span id="pageInfo" class="text-gray-600">Hal: 1/1</span>
             </div>
-            <div class="border border-gray-300 rounded overflow-auto flex-grow" id="pdfViewerContainer">
+            <div class="relative border border-gray-300 rounded overflow-auto flex-grow" id="pdfViewerContainer">
+                <button id="scaleUpButton" class="absolute top-2 left-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded transition duration-200 z-10">
+                    <i class="fas fa-expand"></i>
+                </button>
                 <canvas id="pdfViewer" class="w-full"></canvas>
             </div>
         </div>
@@ -374,6 +382,67 @@
             });
             this.textContent = isHidden ? 'Delete' : 'Delete';
         });
+
+        // Scale up functionality
+// Scale up functionality
+document.getElementById('scaleUpButton').addEventListener('click', function() {
+    const pdfViewerContainer = document.getElementById('pdfViewerContainer');
+
+    // Cek apakah elemen sudah dalam mode fullscreen
+    if (!document.fullscreenElement) {
+        // Masuk ke mode fullscreen
+        pdfViewerContainer.requestFullscreen().then(() => {
+            // Hitung skala yang sesuai
+            const scale = calculateScale();
+            renderPage(currentPage, scale); // Render halaman dengan skala yang dihitung
+        }).catch(err => {
+            console.error(`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
+        });
+    } else {
+        // Keluar dari mode fullscreen
+        document.exitFullscreen();
+    }
+});
+
+function calculateScale() {
+    const pdfViewerContainer = document.getElementById('pdfViewerContainer');
+    const containerWidth = pdfViewerContainer.clientWidth;
+    const containerHeight = pdfViewerContainer.clientHeight;
+
+    // Ambil ukuran halaman PDF
+    const page = pdfDoc.getPage(currentPage);
+    const viewport = page.getViewport({ scale: 1 }); // Mendapatkan viewport dengan skala 1
+    const pageWidth = viewport.width;
+    const pageHeight = viewport.height;
+
+    // Hitung skala berdasarkan ukuran container dan ukuran halaman
+    const widthScale = containerWidth / pageWidth;
+    const heightScale = containerHeight / pageHeight;
+
+    // Gunakan skala terkecil agar halaman pas dalam container
+    return Math.min(widthScale, heightScale);
+}
+
+function renderPage(pageNum, scale = 1.5) {
+    pdfDoc.getPage(pageNum).then(function(page) {
+        const viewport = page.getViewport({ scale: scale });
+
+        const canvas = document.getElementById('pdfViewer');
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        const renderContext = {
+            canvasContext: context,
+            viewport: viewport
+        };
+        page.render(renderContext).promise.then(function() {
+            // Adjust the container height to fit the canvas
+            document.getElementById('pdfViewerContainer').style.height = `${canvas.height}px`;
+        });
+    });
+}
+
     </script>
 </body>
 </html>
