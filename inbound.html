@@ -50,7 +50,7 @@
                 <div class="flex mb-6 items-start justify-between">
                     <div class="flex space-x-2">
                         <button type="button" id="addRow" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Tambah Baris</button>
-                        <button type="button" id="add10Rows" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Tambah 10 Baris</button>
+                        <button type="button" id="add50Rows" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Tambah 50 Baris</button>
                         <button type="button" id="dataMaster" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Data Master</button>
                         <button type="button" id="hideButton" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition duration-200">Delete</button>
                         <button type="button" id="copyData" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Copy</button>
@@ -193,8 +193,8 @@
             addRows(1);
         });
 
-        document.getElementById('add10Rows').addEventListener('click', function() {
-            addRows(10);
+        document.getElementById('add50Rows').addEventListener('click', function() {
+            addRows(50);
         });
 
         function addRows(numRows) {
