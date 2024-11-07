@@ -231,11 +231,22 @@
         const stokRange = 'Sheet1!A2:A';
 
         async function fetchData() {
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
-            const response = await fetch(url);
-            const data = await response.json();
-            return data.values.flat();
-        }
+    // Cek apakah data sudah ada di localStorage
+    const cachedData = localStorage.getItem('stokData');
+    if (cachedData) {
+        return JSON.parse(cachedData); // Kembalikan data dari cache
+    }
+
+    // Jika tidak ada di cache, ambil dari Google Sheets
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    // Simpan data ke localStorage
+    localStorage.setItem('stokData', JSON.stringify(data.values.flat()));
+    
+    return data.values.flat();
+}
 
         async function showDropdown(inputElement) {
             const dropdownContent = inputElement.nextElementSibling;
