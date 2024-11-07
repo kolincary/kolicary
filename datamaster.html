@@ -40,25 +40,18 @@
     const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A';
     const spreadsheetId = '1Lr7Do1DYOhNqAjoWcUEd1xqH4pHCQxEHxDD1rP4Q-Dc';
     const stokRange = 'Sheet1!A2:A';
-    let cachedData = [];
     let isSubmitting = false;
 
     document.addEventListener('DOMContentLoaded', function() {
-      if (localStorage.getItem('cachedData')) {
-        cachedData = JSON.parse(localStorage.getItem('cachedData'));
-        renderTable(cachedData);
-      } else {
-        fetchData();
-      }
+      fetchData();
     });
 
     function fetchData() {
       fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`)
         .then(response => response.json())
         .then(data => {
-          cachedData = data.values || [];
-          localStorage.setItem('cachedData', JSON.stringify(cachedData));
-          renderTable(cachedData);
+          const fetchedData = data.values || [];
+          renderTable(fetchedData);
         })
         .catch(error => {
           console.error('Error fetching data:', error);
@@ -77,8 +70,15 @@
 
     function searchTable() {
       const searchTerm = document.getElementById('search-input').value.toLowerCase();
-      const filteredData = cachedData.filter(row => row[0].toLowerCase().includes(searchTerm));
-      renderTable(filteredData);
+      const tableBody = document.getElementById('table-body');
+      const rows = tableBody.getElementsByTagName('tr');
+      for (let i = 0; i < rows.length; i++) {
+        const cell = rows[i].getElementsByTagName('td')[1];
+        if (cell) {
+          const textValue = cell.textContent || cell.innerText;
+          rows[i].style.display = textValue.toLowerCase().includes(searchTerm) ? "" : "none";
+        }
+      }
     }
 
     let showDeleteIcons = false; // Variabel untuk mengontrol tampilan ikon hapus
@@ -100,7 +100,7 @@
         showPopup("Data MSKU berhasil dikirim!");
         resetForm(); // Reset form after successful submission
         hideDeleteIcons(); // Sembunyikan ikon hapus setelah pengiriman
-        fetchData(); // Refresh data
+ fetchData(); // Refresh data
         isSubmitting = false; // Reset submission state
       })
       .catch(error => {
@@ -265,6 +265,6 @@
   <div id="popup" class="popup">
     <p></p>
     <button onclick="closePopup()">OK</button>
-  </div>
+ </div>
 </body>
 </html>
