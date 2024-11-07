@@ -19,49 +19,50 @@
         .dropdown-content {
             display: none;
             position: absolute;
-            background-color: #f9f9f9;
+            background-color: #ffffff;
             min-width: 100%;
-            max-height: 500px;
+            max-height: 200px;
             overflow-y: auto;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
         }
         .dropdown-content div {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
+            color: #2d3748;
+            padding: 8px 16px;
+            cursor: pointer;
         }
         .dropdown-content div:hover, .dropdown-content .highlight {
-            background-color: #f1f1f1;
+            background-color: #edf2f7;
         }
         .dropdown.show .dropdown-content {
             display: block;
         }
     </style>
 </head>
-<body class="font-roboto bg-gray-100 h-screen flex">
-    <div class="container mx-auto p-4 bg-white shadow-lg rounded-lg flex h-full">
+<body class="font-roboto bg-gray-50 h-screen flex">
+    <div class="container mx-auto p-6 bg-white shadow-xl rounded-lg flex h-full">
         <!-- Left Side: Data Input -->
-        <div class="w-1/2 p-4 border-r border-gray-200 h-full overflow-auto">
-            <h2 class="text-2xl font-bold mb-4">Input Data</h2>
+        <div class="w-1/2 p-6 border-r border-gray-200 h-full overflow-auto">
+            <h2 class="text-3xl font-bold mb-6 text-gray-800">Input Data</h2>
             <form id="dataForm">
-                <div class="flex mb-4 items-center justify-between">
+                <div class="flex mb-6 items-center justify-between">
                     <div>
-                        <button type="button" id="addRow" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Tambah Baris</button>
-                        <button type="button" id="add10Rows" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Tambah 10 Baris</button>
-                        <button type="button" id="dataMaster" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Data Master</button>
-                        <button type="button" id="copyData" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Copy</button>
+                        <button type="button" id="addRow" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2 transition duration-200">Tambah Baris</button>
+                        <button type="button" id="add10Rows" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2 transition duration-200">Tambah 10 Baris</button>
+                        <button type="button" id="dataMaster" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2 transition duration-200">Data Master</button>
+                        <button type="button" id="copyData" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2 transition duration-200">Copy</button>
                     </div>
-                    <span id="rowCount" class="text-gray-700">Row: 10</span>
+                    <span id="rowCount" class="text-gray-600">Row: 10</span>
                 </div>
-                <table class="w-full mb-4 border-collapse border border-gray-300">
+                <table class="w-full mb-6 border-collapse border border-gray-300">
                     <thead>
-                        <tr>
-                            <th class="border border-gray-300 px-4 py-2 w-2/3">MSKU</th>
-                            <th class="border border-gray-300 px-4 py-2 w-1/6">Biaya</th>
-                            <th class="border border-gray-300 px-4 py-2 w-1/6">Kuantitas</th>
-                            <th class="border border-gray-300 px-4 py-2 w-1/6">Aksi</th>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-300 px-4 py-2 w-2/3 text-left">MSKU</th>
+                            <th class="border border-gray-300 px-4 py-2 w-1/6 text-left">Biaya</th>
+                            <th class="border border-gray-300 px-4 py-2 w-1/6 text-left">Kuantitas</th>
+                            <th class="border border-gray-300 px-4 py-2 w-1/6 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -72,13 +73,13 @@
                                     <tr>
                                         <td class="border border-gray-300 px-4 py-2">
                                             <div class="dropdown">
-                                                <input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap" oninput="showDropdown(this)" onkeydown="navigateDropdown(event, this)">
+                                                <input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="showDropdown(this)" onkeydown="navigateDropdown(event, this)">
                                                 <div class="dropdown-content"></div>
                                             </div>
                                         </td>
-                                        <td class="border border-gray-300 px-4 py-2"><input type="text" value="0" class="w-full p-2 border border-gray-300 rounded biaya" readonly></td>
-                                        <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas" onkeydown="navigateKuantitas(event, this)"></td>
-                                        <td class="border border-gray-300 px-4 py-2 text-center"><button type="button" class="bg-red-500 text-white px-2 py-1 rounded deleteRow">Hapus</button></td>
+                                        <td class="border border-gray-300 px-4 py-2"><input type="text" value="0" class="w-full p-2 border border-gray-300 rounded biaya bg-gray-100" readonly></td>
+                                        <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas focus:outline-none focus:ring-2 focus:ring-blue-500" onkeydown="navigateKuantitas(event, this)"></td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center"><button type="button" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded deleteRow transition duration-200">Hapus</button></td>
                                     </tr>
                                 `);
                             }
@@ -88,16 +89,16 @@
             </form>
         </div>
         <!-- Right Side: PDF Viewer -->
-        <div class="w-1/2 p-4 flex flex-col h-full">
-            <h2 class="text-2xl font-bold mb-4">PDF Viewer</h2>
-            <div class="mb-4">
+        <div class="w-1/2 p-6 flex flex-col h-full">
+            <h2 class="text-3xl font-bold mb-6 text-gray-800">PDF Viewer</h2>
+            <div class="mb-6">
                 <label for="pdfUpload" class="block text-gray-700">Upload PDF</label>
-                <input type="file" id="pdfUpload" class="w-full p-2 border border-gray-300 rounded mt-1" accept="application/pdf">
+                <input type="file" id="pdfUpload" class="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500" accept="application/pdf">
             </div>
-            <button id="renderPdfButton" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Render PDF</button>
-            <div class="flex mb-4">
-                <button id="prevPage" class="bg-gray-300 text-black px-4 py-2 rounded mr-2">Previous</button>
-                <button id="nextPage" class="bg-gray-300 text-black px-4 py-2 rounded">Next</button>
+            <button id="renderPdfButton" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mb-6 transition duration-200">Render PDF</button>
+            <div class="flex mb-6">
+                <button id="prevPage" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded mr-2 transition duration-200">Previous</button>
+                <button id="nextPage" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded transition duration-200">Next</button>
             </div>
             <div class="border border-gray-300 rounded overflow-auto flex-grow" id="pdfViewerContainer">
                 <canvas id="pdfViewer" class="w-full"></canvas>
@@ -192,13 +193,13 @@
                 row.innerHTML = `
                     <td class="border border-gray-300 px-4 py-2">
                         <div class="dropdown">
-                            <input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap" oninput="showDropdown(this)" onkeydown="navigateDropdown(event, this)">
+                            <input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="showDropdown(this)" onkeydown="navigateDropdown(event, this)">
                             <div class="dropdown-content"></div>
                         </div>
                     </td>
-                    <td class="border border-gray-300 px-4 py-2"><input type="text" value="0" class="w-full p-2 border border-gray-300 rounded biaya" readonly></td>
-                    <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas" onkeydown="navigateKuantitas(event, this)"></td>
-                    <td class="border border-gray-300 px-4 py-2 text-center"><button type="button" class="bg-red-500 text-white px-2 py-1 rounded deleteRow">Hapus</button></td>
+                    <td class="border border-gray-300 px-4 py-2"><input type="text" value="0" class="w-full p-2 border border-gray-300 rounded biaya bg-gray-100" readonly></td>
+                    <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas focus:outline-none focus:ring-2 focus:ring-blue-500" onkeydown="navigateKuantitas(event, this)"></td>
+                    <td class="border border-gray-300 px-4 py-2 text-center"><button type="button" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded deleteRow transition duration-200">Hapus</button></td>
                 `;
                 tableBody.appendChild(row);
             }
@@ -231,22 +232,22 @@
         const stokRange = 'Sheet1!A2:A';
 
         async function fetchData() {
-    // Cek apakah data sudah ada di localStorage
-    const cachedData = localStorage.getItem('stokData');
-    if (cachedData) {
-        return JSON.parse(cachedData); // Kembalikan data dari cache
-    }
+            // Cek apakah data sudah ada di localStorage
+            const cachedData = localStorage.getItem('stokData');
+            if (cachedData) {
+                return JSON.parse(cachedData); // Kembalikan data dari cache
+            }
 
-    // Jika tidak ada di cache, ambil dari Google Sheets
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    
-    // Simpan data ke localStorage
-    localStorage.setItem('stokData', JSON.stringify(data.values.flat()));
-    
-    return data.values.flat();
-}
+            // Jika tidak ada di cache, ambil dari Google Sheets
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            // Simpan data ke localStorage
+            localStorage.setItem('stokData', JSON.stringify(data.values.flat()));
+            
+            return data.values.flat();
+        }
 
         async function showDropdown(inputElement) {
             const dropdownContent = inputElement.nextElementSibling;
