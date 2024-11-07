@@ -57,6 +57,7 @@
                         <button type="button" id="addRow" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Tambah Baris</button>
                         <button type="button" id="add50Rows" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Tambah 50 Baris</button>
                         <button type="button" id="dataMaster" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Data Master</button>
+			<button id="refreshData" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition duration-200">Refresh Data</button>
                         <button type="button" id="hideButton" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition duration-200">Delete</button>
                         <button type="button" id="copyData" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Copy</button>
                     </div>
@@ -214,6 +215,12 @@ if (!cachedTime || (currentTime - cachedTime > cacheDuration)) {
         document.getElementById('add50Rows').addEventListener('click', function() {
             addRows(50);
         });
+
+document.getElementById('refreshData').addEventListener('click', async function() {
+    localStorage.removeItem('stokData'); // Hapus cache
+    const data = await fetchData(); // Ambil data terbaru
+    console.log("Data refreshed:", data); // Tampilkan data di konsol
+});
 
         function addRows(numRows) {
             const tableBody = document.getElementById('tableBody');
