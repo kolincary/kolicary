@@ -124,6 +124,16 @@
         let currentPage = 1;
         let pdfFile = null;
 
+// Menghapus cache jika sudah lebih dari 5 menit
+const cachedTime = localStorage.getItem('cachedTime');
+const currentTime = new Date().getTime();
+const cacheDuration = 5 * 60 * 1000; // 5 menit dalam milidetik
+
+if (!cachedTime || (currentTime - cachedTime > cacheDuration)) {
+    localStorage.removeItem('stokData');
+    localStorage.setItem('cachedTime', currentTime); // Update waktu cache
+}
+
         document.getElementById('pdfUpload').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file && file.type === 'application/pdf') {
@@ -250,44 +260,42 @@
         const spreadsheetId = '1Lr7Do1DYOhNqAjoWcUEd1xqH4pHCQxEHxDD1rP4Q-Dc';
         const stokRange = 'Sheet1!A2:A';
 
-        async function fetchData() {
-            // Cek apakah data sudah ada di localStorage
-            const cachedData = localStorage.getItem('stokData');
-            if (cachedData) {
-                return JSON.parse(cachedData); // Kembalikan data dari cache
-            }
+async function fetchData() {
+    const cachedData = localStorage.getItem('stokData');
+    if (cachedData) {
+        return JSON.parse(cachedData); // Kembalikan data dari cache
+    }
 
-            // Jika tidak ada di cache, ambil dari Google Sheets
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            // Simpan data ke localStorage
-            localStorage.setItem('stokData', JSON.stringify(data.values.flat()));
-            
-            return data.values.flat();
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    // Simpan data ke localStorage
+    localStorage.setItem('stokData', JSON.stringify(data.values.flat()));
+    return data.values.flat();
+}
+
+async function showDropdown(inputElement) {
+    const dropdownContent = inputElement.nextElementSibling;
+    const query = inputElement.value.toLowerCase();
+    const data = await fetchData(); // Ambil data terbaru
+    const filteredData = data.filter(item => item.toLowerCase().includes(query));
+    
+    dropdownContent.innerHTML = '';
+    filteredData.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.textContent = item;
+        if (index === 0) {
+            div.classList.add('highlight');
         }
-
-        async function showDropdown(inputElement) {
-            const dropdownContent = inputElement.nextElementSibling;
-            const query = inputElement.value.toLowerCase();
-            const data = await fetchData();
-            const filteredData = data.filter(item => item.toLowerCase().includes(query));
+        div.addEventListener('click', () => {
+            inputElement.value = item;
             dropdownContent.innerHTML = '';
-            filteredData.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.textContent = item;
-                if (index === 0) {
-                    div.classList.add('highlight');
-                }
-                div.addEventListener('click', () => {
-                    inputElement.value = item;
-                    dropdownContent.innerHTML = '';
-                });
-                dropdownContent.appendChild(div);
-            });
-            dropdownContent.parentElement.classList.add('show');
-        }
+        });
+        dropdownContent.appendChild(div);
+    });
+    dropdownContent.parentElement.classList.add('show');
+}
 
         function navigateDropdown(event, inputElement) {
             const dropdownContent = inputElement.nextElementSibling;
