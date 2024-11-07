@@ -44,6 +44,37 @@
     height: 100vh;
     background-color: white; /* Atur latar belakang sesuai kebutuhan */
 }
+#helpButton {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 50;
+}
+#helpModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+}
+#helpModalContent {
+    background-color: white;
+    padding: 35px;
+    border-radius: 8px;
+    max-width: 800px;
+    width: 100%;
+}
+#closeHelpModal {
+    float: right;
+    cursor: pointer;
+    font-size: 40px;
+    margin-top: -25;
+}
     </style>
 </head>
 <body class="font-roboto bg-gray-50 h-screen flex">
@@ -94,6 +125,9 @@
                     </tbody>
                 </table>
             </form>
+            <button id="helpButton" class="bg-yellow-500 hover:bg-yellow-600 text-white p-4 rounded-full shadow-lg transition duration-200">
+                <i class="fas fa-lightbulb"></i>
+            </button>
         </div>
         <!-- Right Side: PDF Viewer -->
         <div class="w-1/2 p-6 flex flex-col h-full">
@@ -116,6 +150,23 @@
             </div>
         </div>
     </div>
+
+<!-- Help Modal -->
+<div id="helpModal" class="flex">
+    <div id="helpModalContent">
+        <span id="closeHelpModal" class="text-gray-600 hover:text-gray-800 cursor-pointer">&times;</span>
+        <h2 class="text-2xl font-bold mb-4">Cara Penggunaan</h2>
+        <p class="mb-4">Berikut adalah petunjuk cara penggunaan aplikasi ini:</p>
+        <ul class="list-disc list-inside space-y-2">
+            <li>Untuk menambah baris, klik tombol "Tambah Baris" atau "Tambah 50 Baris".</li>
+            <li>Untuk menghapus baris, klik tombol "Delete" dan kemudian klik tombol "Hapus" di kolom Aksi.</li>
+            <li>Untuk mengunggah PDF, klik tombol "Upload PDF" dan pilih file PDF yang ingin Anda unggah.</li>
+            <li>Gunakan tombol "Previous" dan "Next" untuk menavigasi halaman PDF.</li>
+            <li>Gunakan tombol "Copy" untuk menyalin data yang telah diinput.</li>
+            <li>Gunakan tombol "Refresh Data" untuk memperbarui data dari Google Sheets.</li>
+        </ul>
+    </div>
+</div>
 
     <script>
         const pdfjsLib = window['pdfjs-dist/build/pdf'];
@@ -457,6 +508,14 @@ function renderPage(pageNum, scale = 1.5) {
         });
     });
 }
+
+document.getElementById('helpButton').addEventListener('click', function() {
+    document.getElementById('helpModal').style.display = 'flex'; // Menampilkan modal bantuan
+});
+
+document.getElementById('closeHelpModal').addEventListener('click', function() {
+    document.getElementById('helpModal').style.display = 'none'; // Menutup modal bantuan
+});
 
     </script>
 </body>
