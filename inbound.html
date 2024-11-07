@@ -173,6 +173,7 @@
             currentPage--;
             renderPage(currentPage);
             updatePageInfo();
+            document.getElementById('pdfViewerContainer').scrollTo(0, 0); // Scroll ke atas
         });
 
         document.getElementById('nextPage').addEventListener('click', function() {
@@ -180,6 +181,7 @@
             currentPage++;
             renderPage(currentPage);
             updatePageInfo();
+            document.getElementById('pdfViewerContainer').scrollTo(0, 0); // Scroll ke atas
         });
 
         function updatePageInfo() {
