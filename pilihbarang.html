@@ -26,13 +26,13 @@
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
     <div class="w-full h-full flex space-x-4">
         <!-- Left Window -->
-        <div class="w-1/2 h-full p-6 bg-white rounded-lg shadow-md scrollable">
+        <div class="w-1/2 h-full p-6 bg-white rounded-lg shadow-md flex flex-col">
             <h1 class="text-2xl font-bold mb-4">Paste Data and Generate Table</h1>
-            <textarea id="dataInputLeft" class="w-full p-3 border border-gray-300 rounded mb-4" rows="5" placeholder="Paste your data here..."></textarea>
-            <div class="flex space-x-4">
+            <textarea id="dataInputLeft" class="w-full p-3 border border-gray-300 rounded mb-4 flex-grow-0" rows="5" placeholder="Paste your data here..."></textarea>
+            <div class="flex space-x-4 flex-grow-0">
                 <button id="generateTableLeft" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Generate Table</button>
             </div>
-            <div id="tableContainerLeft" class="mt-6 overflow-x-auto">
+            <div id="tableContainerLeft" class="mt-6 overflow-x-auto flex-grow">
                 <p id="rowCountLeft" class="mb-2">Row: 0</p>
                 <table class="min-w-full bg-white border border-gray-300 text-sm">
                     <thead>
@@ -49,13 +49,12 @@
         </div>
 
         <!-- Right Window -->
-        <div class="w-1/2 h-full p-6 bg-white rounded-lg shadow-md scrollable">
-            <div class="flex justify-between items-center mb-4">
+        <div class="w-1/2 h-full p-6 bg-white rounded-lg shadow-md flex flex-col">
+            <div class="flex justify-between items-center mb-4 flex-grow-0">
                 <h1 class="text-2xl font-bold">Empty Table List</h1>
                 <button id="copyData" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Copy Data</button>
             </div>
-            <div id="emptyTableContainer" class="mt-6 overflow-x-auto">
-                <p id="rowCountRight" class="mb-2">Row: 0</p>
+            <div id="emptyTableContainer" class="mt-6 overflow-x-auto flex-grow">
                 <table class="min-w-full bg-white border border-gray-300 text-sm">
                     <thead>
                         <tr>
