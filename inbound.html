@@ -39,57 +39,55 @@
         .dropdown.show .dropdown-content {
             display: block;
         }
-#pdfViewerContainer:fullscreen {
-    width: 100vw;
-    height: 100vh;
-    background-color: white; /* Atur latar belakang sesuai kebutuhan */
-}
-#helpButton {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 50;
-}
-#helpModal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 100;
-    justify-content: center;
-    align-items: center;
-}
-#helpModalContent {
-    background-color: white;
-    padding: 35px;
-    border-radius: 8px;
-    max-width: 800px;
-    width: 100%;
-}
-#closeHelpModal {
-    float: right;
-    cursor: pointer;
-    font-size: 40px;
-    margin-top: -25;
-}
+        #pdfViewerContainer:fullscreen {
+            width: 100vw;
+            height: 100vh;
+            background-color: white;
+        }
+        #helpButton {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 50;
+        }
+        #helpModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        #helpModalContent {
+            background-color: white;
+            padding: 35px;
+            border-radius: 8px;
+            max-width: 800px;
+            width: 100%;
+        }
+        #closeHelpModal {
+            float: right;
+            cursor: pointer;
+            font-size: 40px;
+            margin-top: -25;
+        }
     </style>
 </head>
 <body class="font-roboto bg-gray-50 h-screen flex">
     <div class="container mx-auto p-6 bg-white shadow-xl rounded-lg flex h-full">
         <!-- Left Side: Data Input -->
-        <div class="w-1/2 p-6 border-r border-gray-200 h-full overflow-auto">
+        <div id="dataInputSection" class="w-1/2 p-6 border-r border-gray-200 h-full overflow-auto transition-all duration-300">
             <h2 class="text-3xl font-bold mb-6 text-gray-800">INPUT DATA MASSAL GINEE</h2>
             <form id="dataForm">
                 <div class="flex mb-6 items-start justify-between">
                     <div class="flex space-x-2">
-                        <button type="button" id="addRow" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Tambah Baris</button>
-                        <button type="button" id="add50Rows" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Tambah 50 Baris</button>
                         <button type="button" id="dataMaster" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Data Master</button>
-			<button id="refreshData" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition duration-200">Refresh Data</button>
-                        <button type="button" id="hideButton" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition duration-200">Delete</button>
+                        <button type="button" id="pilihBarang" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Pilih Barang</button>
+                        <button id="refreshData" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition duration-200">Refresh Data</button>
                         <button type="button" id="copyData" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Copy</button>
                     </div>
                     <span id="rowCount" class="text-gray-600 ml-2">Row: 12</span>
@@ -130,7 +128,10 @@
             </button>
         </div>
         <!-- Right Side: PDF Viewer -->
-        <div class="w-1/2 p-6 flex flex-col h-full">
+        <div class="w-1/2 p-6 flex flex-col h-full relative transition-all duration-300" id="pdfViewerSection">
+            <button id="togglePdfViewer" class="absolute top-2 right-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded transition duration-200 z-10">
+                <i class="fas fa-chevron-left"></i>
+            </button>
             <h2 class="text-3xl font-bold mb-6 text-gray-800">PDF Viewer</h2>
             <div class="mb-6" id="pdfControls">
                 <label for="pdfUpload" class="block text-gray-700">Upload PDF</label>
@@ -151,22 +152,22 @@
         </div>
     </div>
 
-<!-- Help Modal -->
-<div id="helpModal" class="flex">
-    <div id="helpModalContent">
-        <span id="closeHelpModal" class="text-gray-600 hover:text-gray-800 cursor-pointer">&times;</span>
-        <h2 class="text-2xl font-bold mb-4">Cara Penggunaan</h2>
-        <p class="mb-4">Berikut adalah petunjuk cara penggunaan aplikasi ini:</p>
-        <ul class="list-disc list-inside space-y-2">
-            <li>Untuk menambah baris, klik tombol "Tambah Baris" atau "Tambah 50 Baris".</li>
-            <li>Untuk menghapus baris, klik tombol "Delete" dan kemudian klik tombol "Hapus" di kolom Aksi.</li>
-            <li>Untuk mengunggah PDF, klik tombol "Upload PDF" dan pilih file PDF yang ingin Anda unggah.</li>
-            <li>Gunakan tombol "Previous" dan "Next" untuk menavigasi halaman PDF.</li>
-            <li>Gunakan tombol "Copy" untuk menyalin data yang telah diinput.</li>
-            <li>Gunakan tombol "Refresh Data" untuk memperbarui data dari Google Sheets.</li>
-        </ul>
+    <!-- Help Modal -->
+    <div id="helpModal" class="flex">
+        <div id="helpModalContent">
+            <span id="closeHelpModal" class="text-gray-600 hover:text-gray-800 cursor-pointer">&times;</span>
+            <h2 class="text-2xl font-bold mb-4">Cara Penggunaan</h2>
+            <p class="mb-4">Berikut adalah petunjuk cara penggunaan aplikasi ini:</p>
+            <ul class="list-disc list-inside space-y-2">
+                <li>Untuk menambah baris, klik tombol "Tambah Baris".</li>
+                <li>Untuk menghapus baris, klik tombol "Delete" dan kemudian klik tombol "Hapus" di kolom Aksi.</li>
+                <li>Untuk mengunggah PDF, klik tombol "Upload PDF" dan pilih file PDF yang ingin Anda unggah.</li>
+                <li>Gunakan tombol "Previous" dan "Next" untuk menavigasi halaman PDF.</li>
+                <li>Gunakan tombol "Copy" untuk menyalin data yang telah diinput.</li>
+                <li>Gunakan tombol "Refresh Data" untuk memperbarui data dari Google Sheets.</li>
+            </ul>
+        </div>
     </div>
-</div>
 
     <script>
         const pdfjsLib = window['pdfjs-dist/build/pdf'];
@@ -176,15 +177,15 @@
         let currentPage = 1;
         let pdfFile = null;
 
-// Menghapus cache jika sudah lebih dari 5 menit
-const cachedTime = localStorage.getItem('cachedTime');
-const currentTime = new Date().getTime();
-const cacheDuration = 5 * 60 * 1000; // 5 menit dalam milidetik
+        // Menghapus cache jika sudah lebih dari 5 menit
+        const cachedTime = localStorage.getItem('cachedTime');
+        const currentTime = new Date().getTime();
+        const cacheDuration = 5 * 60 * 1000; // 5 menit dalam milidetik
 
-if (!cachedTime || (currentTime - cachedTime > cacheDuration)) {
-    localStorage.removeItem('stokData');
-    localStorage.setItem('cachedTime', currentTime); // Update waktu cache
-}
+        if (!cachedTime || (currentTime - cachedTime > cacheDuration)) {
+            localStorage.removeItem('stokData');
+            localStorage.setItem('cachedTime', currentTime); // Update waktu cache
+        }
 
         document.getElementById('pdfUpload').addEventListener('change', function(event) {
             const file = event.target.files[0];
@@ -258,40 +259,11 @@ if (!cachedTime || (currentTime - cachedTime > cacheDuration)) {
             document.getElementById('pageInfo').textContent = `Hal: ${currentPage}/${pdfDoc.numPages}`;
         }
 
-        // Add row functionality
-        document.getElementById('addRow').addEventListener('click', function() {
-            addRows(1);
+        document.getElementById('refreshData').addEventListener('click', async function() {
+            localStorage.removeItem('stokData'); // Hapus cache
+            const data = await fetchData(); // Ambil data terbaru
+            console.log("Data refreshed:", data); // Tampilkan data di konsol
         });
-
-        document.getElementById('add50Rows').addEventListener('click', function() {
-            addRows(50);
-        });
-
-document.getElementById('refreshData').addEventListener('click', async function() {
-    localStorage.removeItem('stokData'); // Hapus cache
-    const data = await fetchData(); // Ambil data terbaru
-    console.log("Data refreshed:", data); // Tampilkan data di konsol
-});
-
-        function addRows(numRows) {
-            const tableBody = document.getElementById('tableBody');
-            for (let i = 0; i < numRows; i++) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="border border-gray-300 px-4 py-2">
-                        <div class="dropdown">
-                            <input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="showDropdown(this)" onkeydown="navigateDropdown(event, this)">
-                            <div class="dropdown-content"></div>
-                        </div>
-                    </td>
-                    <td class="border border-gray-300 px-4 py-2"><input type="text" value="0" class="w-full p-2 border border-gray-300 rounded biaya bg-gray-100" readonly></td>
-                    <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas focus:outline-none focus:ring-2 focus:ring-blue-500" onkeydown="navigateKuantitas(event, this)"></td>
-                    <td class="border border-gray-300 px-4 py-2 text-center aksi-column" style="display: none;"><button type="button" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded deleteRow transition duration-200">Hapus</button></td>
-                `;
-                tableBody.appendChild(row);
-            }
-            updateRowCount();
-        }
 
         function updateRowCount() {
             const rows = document.querySelectorAll('#tableBody tr');
@@ -318,42 +290,42 @@ document.getElementById('refreshData').addEventListener('click', async function(
         const spreadsheetId = '1Lr7Do1DYOhNqAjoWcUEd1xqH4pHCQxEHxDD1rP4Q-Dc';
         const stokRange = 'Sheet1!A2:A';
 
-async function fetchData() {
-    const cachedData = localStorage.getItem('stokData');
-    if (cachedData) {
-        return JSON.parse(cachedData); // Kembalikan data dari cache
-    }
+        async function fetchData() {
+            const cachedData = localStorage.getItem('stokData');
+            if (cachedData) {
+                return JSON.parse(cachedData); // Kembalikan data dari cache
+            }
 
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
-    const response = await fetch(url);
-    const data = await response.json();
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
+            const response = await fetch(url);
+            const data = await response.json();
 
-    // Simpan data ke localStorage
-    localStorage.setItem('stokData', JSON.stringify(data.values.flat()));
-    return data.values.flat();
-}
-
-async function showDropdown(inputElement) {
-    const dropdownContent = inputElement.nextElementSibling;
-    const query = inputElement.value.toLowerCase();
-    const data = await fetchData(); // Ambil data terbaru
-    const filteredData = data.filter(item => item.toLowerCase().includes(query));
-    
-    dropdownContent.innerHTML = '';
-    filteredData.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.textContent = item;
-        if (index === 0) {
-            div.classList.add('highlight');
+            // Simpan data ke localStorage
+            localStorage.setItem('stokData', JSON.stringify(data.values.flat()));
+            return data.values.flat();
         }
-        div.addEventListener('click', () => {
-            inputElement.value = item;
+
+        async function showDropdown(inputElement) {
+            const dropdownContent = inputElement.nextElementSibling;
+            const query = inputElement.value.toLowerCase();
+            const data = await fetchData(); // Ambil data terbaru
+            const filteredData = data.filter(item => item.toLowerCase().includes(query));
+            
             dropdownContent.innerHTML = '';
-        });
-        dropdownContent.appendChild(div);
-    });
-    dropdownContent.parentElement.classList.add('show');
-}
+            filteredData.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.textContent = item;
+                if (index === 0) {
+                    div.classList.add('highlight');
+                }
+                div.addEventListener('click', () => {
+                    inputElement.value = item;
+                    dropdownContent.innerHTML = '';
+                });
+                dropdownContent.appendChild(div);
+            });
+            dropdownContent.parentElement.classList.add('show');
+        }
 
         function navigateDropdown(event, inputElement) {
             const dropdownContent = inputElement.nextElementSibling;
@@ -439,84 +411,84 @@ async function showDropdown(inputElement) {
             window.location.href = 'datamaster.html';
         });
 
-        // Hide/Show Aksi column functionality
-        document.getElementById('hideButton').addEventListener('click', function() {
-            const aksiColumns = document.querySelectorAll('.aksi-column');
-            const isHidden = aksiColumns[0].style.display === 'none';
-            aksiColumns.forEach(column => {
-                column.style.display = isHidden ? '' : 'none';
-            });
-            this.textContent = isHidden ? 'Delete' : 'Delete';
+        // Redirect to Pilih Barang page
+        document.getElementById('pilihBarang').addEventListener('click', function() {
+            window.location.href = 'pilihbarang.html';
+        });
+
+        // Toggle PDF Viewer visibility
+        document.getElementById('togglePdfViewer').addEventListener('click', function() {
+            const pdfViewerSection = document.getElementById('pdfViewerSection');
+            const isHidden = pdfViewerSection.classList.toggle('hidden');
+            this.innerHTML = isHidden ? '<i class="fas fa-chevron-right"></i>' : '<i class="fas fa-chevron-left"></i>';
         });
 
         // Scale up functionality
-// Scale up functionality
-document.getElementById('scaleUpButton').addEventListener('click', function() {
-    const pdfViewerContainer = document.getElementById('pdfViewerContainer');
+        document.getElementById('scaleUpButton').addEventListener('click', function() {
+            const pdfViewerContainer = document.getElementById('pdfViewerContainer');
 
-    // Cek apakah elemen sudah dalam mode fullscreen
-    if (!document.fullscreenElement) {
-        // Masuk ke mode fullscreen
-        pdfViewerContainer.requestFullscreen().then(() => {
-            // Hitung skala yang sesuai
-            const scale = calculateScale();
-            renderPage(currentPage, scale); // Render halaman dengan skala yang dihitung
-        }).catch(err => {
-            console.error(`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
+            // Cek apakah elemen sudah dalam mode fullscreen
+            if (!document.fullscreenElement) {
+                // Masuk ke mode fullscreen
+                pdfViewerContainer.requestFullscreen().then(() => {
+                    // Hitung skala yang sesuai
+                    const scale = calculateScale();
+                    renderPage(currentPage, scale); // Render halaman dengan skala yang dihitung
+                }).catch(err => {
+                    console.error(`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                // Keluar dari mode fullscreen
+                document.exitFullscreen();
+            }
         });
-    } else {
-        // Keluar dari mode fullscreen
-        document.exitFullscreen();
-    }
-});
 
-function calculateScale() {
-    const pdfViewerContainer = document.getElementById('pdfViewerContainer');
-    const containerWidth = pdfViewerContainer.clientWidth;
-    const containerHeight = pdfViewerContainer.clientHeight;
+        function calculateScale() {
+            const pdfViewerContainer = document.getElementById('pdfViewerContainer');
+            const containerWidth = pdfViewerContainer.clientWidth;
+            const containerHeight = pdfViewerContainer.clientHeight;
 
-    // Ambil ukuran halaman PDF
-    const page = pdfDoc.getPage(currentPage);
-    const viewport = page.getViewport({ scale: 1 }); // Mendapatkan viewport dengan skala 1
-    const pageWidth = viewport.width;
-    const pageHeight = viewport.height;
+            // Ambil ukuran halaman PDF
+            const page = pdfDoc.getPage(currentPage);
+            const viewport = page.getViewport({ scale: 1 }); // Mendapatkan viewport dengan skala 1
+            const pageWidth = viewport.width;
+            const pageHeight = viewport.height;
 
-    // Hitung skala berdasarkan ukuran container dan ukuran halaman
-    const widthScale = containerWidth / pageWidth;
-    const heightScale = containerHeight / pageHeight;
+            // Hitung skala berdasarkan ukuran container dan ukuran halaman
+            const widthScale = containerWidth / pageWidth;
+            const heightScale = containerHeight / pageHeight;
 
-    // Gunakan skala terkecil agar halaman pas dalam container
-    return Math.min(widthScale, heightScale);
-}
+            // Gunakan skala terkecil agar halaman pas dalam container
+            return Math.min(widthScale, heightScale);
+        }
 
-function renderPage(pageNum, scale = 1.5) {
-    pdfDoc.getPage(pageNum).then(function(page) {
-        const viewport = page.getViewport({ scale: scale });
+        function renderPage(pageNum, scale = 1.5) {
+            pdfDoc.getPage(pageNum).then(function(page) {
+                const viewport = page.getViewport({ scale: scale });
 
-        const canvas = document.getElementById('pdfViewer');
-        const context = canvas.getContext('2d');
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
+                const canvas = document.getElementById('pdfViewer');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
 
-        const renderContext = {
-            canvasContext: context,
-            viewport: viewport
-        };
-        page.render(renderContext).promise.then(function() {
-            // Adjust the container height to fit the canvas
-            document.getElementById('pdfViewerContainer').style.height = `${canvas.height}px`;
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext).promise.then(function() {
+                    // Adjust the container height to fit the canvas
+                    document.getElementById('pdfViewerContainer').style.height = `${canvas.height}px`;
+                });
+            });
+        }
+
+        document.getElementById('helpButton').addEventListener('click', function() {
+            document.getElementById('helpModal').style.display = 'flex'; // Menampilkan modal bantuan
         });
-    });
-}
 
-document.getElementById('helpButton').addEventListener('click', function() {
-    document.getElementById('helpModal').style.display = 'flex'; // Menampilkan modal bantuan
-});
-
-document.getElementById('closeHelpModal').addEventListener('click', function() {
-    document.getElementById('helpModal').style.display = 'none'; // Menutup modal bantuan
-});
-
+        document.getElementById('closeHelpModal').addEventListener('click', function() {
+            document.getElementById('helpModal').style.display = 'none'; // Menutup modal bantuan
+        });
     </script>
 </body>
 </html>
