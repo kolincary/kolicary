@@ -1,7 +1,6 @@
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Viewer and Data Input</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -90,7 +89,7 @@
                         <button id="refreshData" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition duration-200">Refresh Data</button>
                         <button type="button" id="copyData" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Copy</button>
                     </div>
-                    <span id="rowCount" class="text-gray-600 ml-2">Row: 12</span>
+                    <span id="rowCount" class="text-gray-600 ml-2">Row: 500</span>
                 </div>
                 <table class="w-full mb-6 border-collapse border border-gray-300">
                     <thead>
@@ -102,9 +101,9 @@
                         </tr>
                     </thead>
                     <tbody id="tableBody">
-                        <!-- Default 12 rows -->
+                        <!-- Default 500 rows -->
                         <script>
-                            for (let i = 0; i < 12; i++) {
+                            for (let i = 0; i < 500; i++) {
                                 document.write(`
                                     <tr>
                                         <td class="border border-gray-300 px-4 py-2">
