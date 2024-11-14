@@ -76,24 +76,24 @@
         }
     </style>
 </head>
-<body class="font-roboto bg-gray-50 h-screen flex">
-    <div class="container mx-auto p-6 bg-white shadow-xl rounded-lg flex h-full">
+<body class="font-roboto bg-gray-100 h-screen flex">
+    <div class="container mx-auto p-6 bg-white shadow-2xl rounded-lg flex h-full">
         <!-- Left Side: Data Input -->
-        <div id="dataInputSection" class="w-full p-6 border-r border-gray-200 h-full overflow-auto transition-all duration-300 relative">
+        <div id="dataInputSection" class="w-full p-6 border-r border-gray-300 h-full overflow-auto transition-all duration-300 relative">
             <h2 class="text-3xl font-bold mb-6 text-gray-800">INPUT DATA MASSAL GINEE</h2>
             <form id="dataForm">
                 <div class="flex mb-6 items-start justify-between">
                     <div class="flex space-x-2">
-                        <button type="button" id="dataMaster" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Data Master</button>
-                        <button type="button" id="pilihBarang" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Pilih Barang</button>
+                        <button type="button" id="dataMaster" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded transition duration-200">Data Master</button>
+                        <button type="button" id="pilihBarang" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded transition duration-200">Pilih Barang</button>
                         <button id="refreshData" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition duration-200">Refresh Data</button>
-                        <button type="button" id="copyData" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Copy</button>
+                        <button type="button" id="copyData" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded transition duration-200">Copy</button>
                     </div>
                     <span id="rowCount" class="text-gray-600 ml-2">Row: 500</span>
                 </div>
                 <table class="w-full mb-6 border-collapse border border-gray-300">
                     <thead>
-                        <tr class="bg-gray-100">
+                        <tr class="bg-gray-200">
                             <th class="border border-gray-300 px-4 py-2 w-2/3 text-left">MSKU</th>
                             <th class="border border-gray-300 px-4 py-2 w-1/6 text-left">Biaya</th>
                             <th class="border border-gray-300 px-4 py-2 w-1/6 text-left">Kuantitas</th>
@@ -108,12 +108,12 @@
                                     <tr>
                                         <td class="border border-gray-300 px-4 py-2">
                                             <div class="dropdown">
-                                                <input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="showDropdown(this)" onkeydown="navigateDropdown(event, this)">
+                                                <input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap focus:outline-none focus:ring-2 focus:ring-indigo-500" oninput="showDropdown(this)" onkeydown="navigateDropdown(event, this)">
                                                 <div class="dropdown-content"></div>
                                             </div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2"><input type="text" value="0" class="w-full p-2 border border-gray-300 rounded biaya bg-gray-100" readonly></td>
-                                        <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas focus:outline-none focus:ring-2 focus:ring-blue-500" onkeydown="navigateKuantitas(event, this)"></td>
+                                        <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas focus:outline-none focus:ring-2 focus:ring-indigo-500" onkeydown="navigateKuantitas(event, this)"></td>
                                         <td class="border border-gray-300 px-4 py-2 text-center aksi-column" style="display: none;"><button type="button" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded deleteRow transition duration-200">Hapus</button></td>
                                     </tr>
                                 `);
@@ -125,7 +125,7 @@
             <button id="helpButton" class="bg-yellow-500 hover:bg-yellow-600 text-white p-4 rounded-full shadow-lg transition duration-200">
                 <i class="fas fa-lightbulb"></i>
             </button>
-            <button id="togglePdfViewer" class="absolute top-2 right-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded transition duration-200 z-10">
+            <button id="togglePdfViewer" class="absolute top-2 right-2 bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1 rounded transition duration-200 z-10">
                 <i class="fas fa-chevron-right"></i>
             </button>
         </div>
@@ -134,16 +134,16 @@
             <h2 class="text-3xl font-bold mb-6 text-gray-800">PDF Viewer</h2>
             <div class="mb-6" id="pdfControls">
                 <label for="pdfUpload" class="block text-gray-700">Upload PDF</label>
-                <input type="file" id="pdfUpload" class="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500" accept="application/pdf">
+                <input type="file" id="pdfUpload" class="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:ring-2 focus:ring-indigo-500" accept="application/pdf">
             </div>
-            <button id="renderPdfButton" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mb-6 transition duration-200">Render PDF</button>
+            <button id="renderPdfButton" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded mb-6 transition duration-200">Render PDF</button>
             <div class="flex mb-6 space-x-2 items-center">
                 <button id="prevPage" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded transition duration-200">Previous</button>
                 <button id="nextPage" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded transition duration-200">Next</button>
                 <span id="pageInfo" class="text-gray-600">Hal: 1/1</span>
             </div>
             <div class="relative border border-gray-300 rounded overflow-auto flex-grow" id="pdfViewerContainer">
-                <button id="scaleUpButton" class="absolute top-2 left-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded transition duration-200 z-10">
+                <button id="scaleUpButton" class="absolute top-2 left-2 bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1 rounded transition duration-200 z-10">
                     <i class="fas fa-expand"></i>
                 </button>
                 <canvas id="pdfViewer" class="w-full"></canvas>
@@ -377,7 +377,7 @@
             }
         }
 
-       document.addEventListener('click', function(event) {
+        document.addEventListener('click', function(event) {
             if (!event.target.matches('.msku')) {
                 const dropdowns = document.querySelectorAll('.dropdown');
                 dropdowns.forEach(dropdown => {
