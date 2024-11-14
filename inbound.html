@@ -79,7 +79,7 @@
 <body class="font-roboto bg-gray-50 h-screen flex">
     <div class="container mx-auto p-6 bg-white shadow-xl rounded-lg flex h-full">
         <!-- Left Side: Data Input -->
-        <div id="dataInputSection" class="w-1/2 p-6 border-r border-gray-200 h-full overflow-auto transition-all duration-300">
+        <div id="dataInputSection" class="w-full p-6 border-r border-gray-200 h-full overflow-auto transition-all duration-300 relative">
             <h2 class="text-3xl font-bold mb-6 text-gray-800">INPUT DATA MASSAL GINEE</h2>
             <form id="dataForm">
                 <div class="flex mb-6 items-start justify-between">
@@ -125,12 +125,12 @@
             <button id="helpButton" class="bg-yellow-500 hover:bg-yellow-600 text-white p-4 rounded-full shadow-lg transition duration-200">
                 <i class="fas fa-lightbulb"></i>
             </button>
+            <button id="togglePdfViewer" class="absolute top-2 right-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded transition duration-200 z-10">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
         <!-- Right Side: PDF Viewer -->
-        <div class="w-1/2 p-6 flex flex-col h-full relative transition-all duration-300" id="pdfViewerSection">
-            <button id="togglePdfViewer" class="absolute top-2 right-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded transition duration-200 z-10">
-                <i class="fas fa-chevron-left"></i>
-            </button>
+        <div class="w-1/2 p-6 flex flex-col h-full relative transition-all duration-300 hidden" id="pdfViewerSection">
             <h2 class="text-3xl font-bold mb-6 text-gray-800">PDF Viewer</h2>
             <div class="mb-6" id="pdfControls">
                 <label for="pdfUpload" class="block text-gray-700">Upload PDF</label>
@@ -377,7 +377,7 @@
             }
         }
 
-        document.addEventListener('click', function(event) {
+       document.addEventListener('click', function(event) {
             if (!event.target.matches('.msku')) {
                 const dropdowns = document.querySelectorAll('.dropdown');
                 dropdowns.forEach(dropdown => {
@@ -417,8 +417,10 @@
 
         // Toggle PDF Viewer visibility
         document.getElementById('togglePdfViewer').addEventListener('click', function() {
+            const dataInputSection = document.getElementById('dataInputSection');
             const pdfViewerSection = document.getElementById('pdfViewerSection');
             const isHidden = pdfViewerSection.classList.toggle('hidden');
+            dataInputSection.style.width = isHidden ? '100%' : '50%';
             this.innerHTML = isHidden ? '<i class="fas fa-chevron-right"></i>' : '<i class="fas fa-chevron-left"></i>';
         });
 
